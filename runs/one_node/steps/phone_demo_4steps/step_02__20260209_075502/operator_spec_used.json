@@ -1,0 +1,16 @@
+{
+  "operator": "production_adjust_business_table_csv",
+  "params": {
+    "months": [
+      "2026-11",
+      "2026-12"
+    ],
+    "rate": 0.1,
+    "file": "business_timeseries.csv"
+  },
+  "reason": {
+    "queue_name": "phone_demo_4steps",
+    "step_id": "step_02",
+    "detail": ""
+  }
+}

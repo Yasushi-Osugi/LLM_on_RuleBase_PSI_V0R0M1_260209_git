@@ -1,0 +1,61 @@
+{
+  "queue_name": "phone_demo_5steps",
+  "version": 1,
+  "run_meta": "configs/phone_sellout_demo__queue.json",
+  "operators": [
+    {
+      "id": "step_01_prod_shift_from",
+      "operator": "production_adjust_business_table_csv",
+      "params": {
+        "months": ["2025-05"],
+        "rate": -0.20,
+        "file": "business_timeseries.csv"
+      },
+      "reason": "reduce_holding_cost_by_shifting_production_start"
+    },
+    {
+      "id": "step_02_prod_shift_to",
+      "operator": "production_adjust_business_table_csv",
+      "params": {
+        "months": ["2025-11", "2025-12"],
+        "rate": 0.10,
+        "file": "business_timeseries.csv"
+      },
+      "reason": "balance_total_volume_and_secure_peak_supply"
+    },
+    {
+      "id": "step_03_sales_promo",
+      "operator": "sales_adjust_business_table_csv",
+      "params": {
+        "months": ["2025-07"],
+        "rate": 0.10,
+        "file": "business_timeseries.csv"
+      },
+      "reason": "inventory_cap_suppression_over_i"
+    },
+    {
+      "id": "step_04_price_down_prepeak",
+      "operator": "price_adjust_business_table_csv",
+      "params": {
+        "months": ["2025-09"],
+        "rate": -0.05,
+        "file": "business_timeseries.csv"
+      },
+      "reason": "pre_peak_inventory_optimization"
+    },
+    {
+      "id": "step_05_price_up_end",
+      "operator": "price_adjust_business_table_csv",
+      "params": {
+        "months": ["2026-03"],
+        "rate": 0.15,
+        "file": "business_timeseries.csv"
+      },
+      "reason": "profit_maximization_under_low_inventory"
+    }
+  ],
+  "notes": [
+    "Queue mode: execute exactly one operator per run in the listed order.",
+    "Decide is disabled in run_meta to prevent operator_spec overwrite."
+  ]
+}

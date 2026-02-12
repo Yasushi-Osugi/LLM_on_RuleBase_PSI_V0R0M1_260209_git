@@ -1,0 +1,13 @@
+Product_name,Parent_node,Child_node,child_node_name,lot_size,leadtime,process_capa,long_vacation_weeks,LT_boat,LT_air,LT_qourier,weeks_year,SS_days,TAX_currency_condition,HS_code,customs_tariff_rate,price_elasticity,cost_standard_flag,AR_lead_time,AP_lead_time,PSI_graph_flag,buffering_stock_flag
+MARS_ENERGY_KWH,root,supply_point,supply_point,1000,0,999999,[],0,0,0,52,7,profile,,0,0,0,0,0,ON,OFF
+MARS_ENERGY_KWH,supply_point,DADMARS,DADMARS,1000,0,999999,[],0,1,0,52,7,profile,,0,0,0,0,0,ON,ON
+MARS_ENERGY_KWH,DADMARS,CS_MARS,CS_MARS,1000,0,999999,[],0,1,0,52,7,profile,,0,0,0,0,0,ON,OFF
+MARS_WATER_L,root,supply_point,supply_point,10000,0,999999,[],0,0,0,52,7,profile,,0,0,0,0,0,ON,OFF
+MARS_WATER_L,supply_point,DADMARS,DADMARS,10000,0,999999,[],0,1,0,52,7,profile,,0,0,0,0,0,ON,ON
+MARS_WATER_L,DADMARS,CS_MARS,CS_MARS,10000,0,999999,[],0,1,0,52,7,profile,,0,0,0,0,0,ON,OFF
+MARS_O2_KG,root,supply_point,supply_point,100,0,999999,[],0,0,0,52,7,profile,,0,0,0,0,0,ON,OFF
+MARS_O2_KG,supply_point,DADMARS,DADMARS,100,0,999999,[],0,1,0,52,7,profile,,0,0,0,0,0,ON,ON
+MARS_O2_KG,DADMARS,CS_MARS,CS_MARS,100,0,999999,[],0,1,0,52,7,profile,,0,0,0,0,0,ON,OFF
+MARS_FOOD_KG,root,supply_point,supply_point,100,0,999999,[],0,0,0,52,7,profile,,0,0,0,0,0,ON,OFF
+MARS_FOOD_KG,supply_point,DADMARS,DADMARS,100,0,999999,[],0,1,0,52,7,profile,,0,0,0,0,0,ON,ON
+MARS_FOOD_KG,DADMARS,CS_MARS,CS_MARS,100,0,999999,[],0,1,0,52,7,profile,,0,0,0,0,0,ON,OFF

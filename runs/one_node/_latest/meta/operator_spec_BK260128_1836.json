@@ -1,0 +1,22 @@
+{
+  "operator": "production_adjust_timeseries_csv",
+  "params": {
+    "months": [
+      "2026-09",
+      "2026-10"
+    ],
+    "delta": 115.99999999999977,
+    "enabled": true
+  },
+  "reason": {
+    "picked_from_issue": null,
+    "severity": null,
+    "summary_status": "OK",
+    "strategy": "rice_gap_smoothing_equal",
+    "gap_total": 231.99999999999955,
+    "prod_window": [
+      "2026-09",
+      "2026-10"
+    ]
+  }
+}

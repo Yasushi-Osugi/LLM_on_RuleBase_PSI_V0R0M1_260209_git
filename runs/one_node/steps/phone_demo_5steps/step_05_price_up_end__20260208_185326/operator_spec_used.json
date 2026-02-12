@@ -1,0 +1,15 @@
+{
+  "operator": "price_adjust_business_table_csv",
+  "params": {
+    "months": [
+      "2026-03"
+    ],
+    "rate": 0.15,
+    "file": "business_timeseries.csv"
+  },
+  "reason": {
+    "queue_name": "phone_demo_5steps",
+    "step_id": "step_05_price_up_end",
+    "detail": "profit_maximization_under_low_inventory"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "operator": "price_adjust_business_table_csv",
+  "params": {
+    "months": [
+      "2026-03"
+    ],
+    "rate": 0.15,
+    "file": "business_timeseries.csv"
+  },
+  "reason": "queue_work: phone_demo_4steps / step: step_04_price_up_end"
+}

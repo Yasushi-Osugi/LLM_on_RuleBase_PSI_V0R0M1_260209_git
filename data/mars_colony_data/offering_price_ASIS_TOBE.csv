@@ -1,0 +1,13 @@
+product_name,node_name,offering_price_ASIS,offering_price_TOBE
+MARS_ENERGY_KWH,supply_point,0,-0.0
+MARS_FOOD_KG,supply_point,0,-0.0
+MARS_O2_KG,supply_point,0,-0.0
+MARS_WATER_L,supply_point,0,-0.0
+MARS_ENERGY_KWH,DADMARS,0.0,-0.0
+MARS_FOOD_KG,DADMARS,0.0,-0.0
+MARS_O2_KG,DADMARS,0.0,-0.0
+MARS_WATER_L,DADMARS,0.0,-0.0
+MARS_ENERGY_KWH,CS_MARS,0.0,0
+MARS_FOOD_KG,CS_MARS,0.0,0
+MARS_O2_KG,CS_MARS,0.0,0
+MARS_WATER_L,CS_MARS,0.0,0

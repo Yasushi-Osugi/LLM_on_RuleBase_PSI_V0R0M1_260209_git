@@ -1,0 +1,15 @@
+{
+  "operator": "production_adjust_timeseries_csv",
+  "params": {
+    "months": [
+      "2027-07",
+      "2027-08"
+    ],
+    "rate": 1.5
+  },
+  "reason": {
+    "picked_from_issue": null,
+    "severity": null,
+    "summary_status": "OK"
+  }
+}

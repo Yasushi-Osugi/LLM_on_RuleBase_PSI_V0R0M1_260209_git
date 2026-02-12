@@ -1,0 +1,30 @@
+{
+  "plugin": "one_node.before_load.apply_operator_spec",
+  "meta_path": "runs\\one_node\\20260210_001319\\meta\\run_meta.json",
+  "operator_specs_count": 1,
+  "result": {
+    "applied": 1,
+    "skipped": 0,
+    "errors": 0
+  },
+  "details": [
+    {
+      "spec": {
+        "operator": "price_adjust_business_table_csv",
+        "params": {
+          "months": [
+            "2026-09"
+          ],
+          "rate": -0.05,
+          "file": "business_timeseries.csv"
+        },
+        "reason": "queue_work: phone_demo_4steps / step: step_03_price_down_prepeak"
+      },
+      "ok": true,
+      "message": "expanded to meta.config.price_adjust_business_table"
+    }
+  ],
+  "source": {
+    "current_operator_spec": null
+  }
+}

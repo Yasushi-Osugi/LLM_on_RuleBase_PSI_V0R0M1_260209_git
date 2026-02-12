@@ -1,0 +1,35 @@
+{
+  "plugin": "one_node.before_load.apply_operator_spec",
+  "meta_path": "runs\\one_node\\20260208_185253\\meta\\run_meta.json",
+  "operator_specs_count": 1,
+  "result": {
+    "applied": 1,
+    "skipped": 0,
+    "errors": 0
+  },
+  "details": [
+    {
+      "spec": {
+        "operator": "production_adjust_business_table_csv",
+        "params": {
+          "months": [
+            "2025-11",
+            "2025-12"
+          ],
+          "rate": 0.1,
+          "file": "business_timeseries.csv"
+        },
+        "reason": {
+          "queue_name": "phone_demo_5steps",
+          "step_id": "step_02_prod_shift_to",
+          "detail": "balance_total_volume_and_secure_peak_supply"
+        }
+      },
+      "ok": true,
+      "message": "expanded to meta.config.production_adjust_business_table"
+    }
+  ],
+  "source": {
+    "current_operator_spec": null
+  }
+}

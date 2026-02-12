@@ -1,0 +1,4 @@
+node_name,node_type,description
+MOM_RICE,MOM,Rice production & harvest node (once per year)
+DAD_RICE,DAD,Rice storage buffer (annual inventory smoothing)
+MKT_RICE,MKT,Domestic rice consumption market

@@ -1,0 +1,27 @@
+{
+  "scenario": "rice_demand_adjust_demo",
+  "demand_adjust": { "months": ["2025-07","2025-08"], "rate": 0.2 },
+
+  "config": {
+
+    "diagnose": {
+      "seasonal_prebuild_lookback_months": 12,
+      "seasonal_prebuild_inv_months": 2.0,
+      "seasonal_prebuild_reco_rate": 1.50,
+      "seasonal_prebuild_backlog_threshold": 0.0
+    },
+
+     "decide": {
+       "deny_operators": ["demand_adjust_csv"]
+     },
+
+
+    "domain": {
+      "rice": {
+        "prod_window": ["2026-09","2026-10"]
+      }
+    }
+  }
+}
+
+

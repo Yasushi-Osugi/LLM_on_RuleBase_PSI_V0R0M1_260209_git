@@ -1,0 +1,31 @@
+{
+  "plugin": "one_node.before_load.apply_operator_spec",
+  "meta_path": "runs\\one_node\\20260209_225039\\meta\\run_meta.json",
+  "operator_specs_count": 1,
+  "result": {
+    "applied": 1,
+    "skipped": 0,
+    "errors": 0
+  },
+  "details": [
+    {
+      "spec": {
+        "operator": "production_adjust_business_table_csv",
+        "params": {
+          "months": [
+            "2026-11",
+            "2026-12"
+          ],
+          "rate": 0.1,
+          "file": "business_timeseries.csv"
+        },
+        "reason": "queue_work: phone_demo_4steps / step: step_02_prod_shift_to"
+      },
+      "ok": true,
+      "message": "expanded to meta.config.production_adjust_business_table"
+    }
+  ],
+  "source": {
+    "current_operator_spec": null
+  }
+}

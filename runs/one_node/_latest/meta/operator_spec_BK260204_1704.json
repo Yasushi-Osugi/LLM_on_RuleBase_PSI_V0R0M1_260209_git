@@ -1,0 +1,19 @@
+{
+  "operator": "production_adjust_business_table_csv",
+  "params": {
+    "months": ["2026-09", "2026-10"],
+    "rate": 0.10,
+    "file": "business_timeseries.csv"
+  },
+  "reason": "prebuild"
+}
+
+{
+  "operator": "price_adjust_business_table_csv",
+  "params": {
+    "months": ["2026-04", "2026-05"],
+    "rate": -0.10,
+    "file": "business_timeseries.csv"
+  },
+  "reason": "sellout"
+}

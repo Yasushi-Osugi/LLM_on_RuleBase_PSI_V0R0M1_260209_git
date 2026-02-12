@@ -1,0 +1,13 @@
+product_name,node_name,price_sales_shipped,cost_total,profit,marketing_promotion,sales_admin_cost,SGA_total,logistics_costs,warehouse_cost,direct_materials_costs,tariff_cost,purchase_total_cost,prod_indirect_labor,prod_indirect_others,direct_labor_costs,depreciation_others,manufacturing_overhead
+MARS_ENERGY_KWH,CS_MARS,1200,0,1200,0,0,0,0,0,0,0,0,0,0,0,0,0
+MARS_ENERGY_KWH,DADMARS,0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0
+MARS_ENERGY_KWH,supply_point,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0
+MARS_WATER_L,CS_MARS,300,0,300,0,0,0,0,0,0,0,0,0,0,0,0,0
+MARS_WATER_L,DADMARS,0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0
+MARS_WATER_L,supply_point,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0
+MARS_O2_KG,CS_MARS,5000,0,5000,0,0,0,0,0,0,0,0,0,0,0,0,0
+MARS_O2_KG,DADMARS,0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0
+MARS_O2_KG,supply_point,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0
+MARS_FOOD_KG,CS_MARS,8000,0,8000,0,0,0,0,0,0,0,0,0,0,0,0,0
+MARS_FOOD_KG,DADMARS,0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0
+MARS_FOOD_KG,supply_point,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0

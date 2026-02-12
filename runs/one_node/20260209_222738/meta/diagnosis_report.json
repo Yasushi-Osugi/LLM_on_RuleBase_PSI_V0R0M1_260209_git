@@ -1,0 +1,12 @@
+{
+  "run_dir": "runs\\one_node\\20260209_222738",
+  "out_path": "runs\\one_node\\20260209_222738\\output\\diagnosis.json",
+  "issue_codes": [
+    "SHORTAGE",
+    "DEMAND_VOLATILITY"
+  ],
+  "seasonal_prebuild_lookback_months": 6,
+  "seasonal_prebuild_inv_months": 1.0,
+  "seasonal_prebuild_reco_rate": 0.1,
+  "seasonal_prebuild_backlog_threshold": 0.0
+}

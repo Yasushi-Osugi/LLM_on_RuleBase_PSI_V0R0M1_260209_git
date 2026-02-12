@@ -1,0 +1,34 @@
+{
+  "plugin": "one_node.before_load.apply_operator_spec",
+  "meta_path": "runs\\one_node\\20260208_185309\\meta\\run_meta.json",
+  "operator_specs_count": 1,
+  "result": {
+    "applied": 0,
+    "skipped": 1,
+    "errors": 0
+  },
+  "details": [
+    {
+      "spec": {
+        "operator": "sales_adjust_business_table_csv",
+        "params": {
+          "months": [
+            "2025-07"
+          ],
+          "rate": 0.1,
+          "file": "business_timeseries.csv"
+        },
+        "reason": {
+          "queue_name": "phone_demo_5steps",
+          "step_id": "step_03_sales_promo",
+          "detail": "inventory_cap_suppression_over_i"
+        }
+      },
+      "ok": false,
+      "message": "unknown operator: sales_adjust_business_table_csv"
+    }
+  ],
+  "source": {
+    "current_operator_spec": null
+  }
+}

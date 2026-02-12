@@ -1,0 +1,3 @@
+from_node,to_node,flow_type,lead_time_month
+MOM_PHONE,DAD_PHONE,production_to_stock,0
+DAD_PHONE,MKT_PHONE,stock_to_market,0

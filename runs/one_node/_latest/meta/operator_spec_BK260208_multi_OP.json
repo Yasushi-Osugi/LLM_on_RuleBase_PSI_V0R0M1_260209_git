@@ -1,0 +1,47 @@
+[
+  {
+    "operator": "sales_adjust_business_table_csv",
+    "params": {
+      "months": ["2025-07"],
+      "rate": 0.10,
+      "file": "business_timeseries.csv"
+    },
+    "reason": "inventory_cap_suppression_over_i"
+  },
+  {
+    "operator": "price_adjust_business_table_csv",
+    "params": {
+      "months": ["2025-09"],
+      "rate": -0.05,
+      "file": "business_timeseries.csv"
+    },
+    "reason": "pre_peak_inventory_optimization"
+  },
+  {
+    "operator": "price_adjust_business_table_csv",
+    "params": {
+      "months": ["2026-03"],
+      "rate": 0.15,
+      "file": "business_timeseries.csv"
+    },
+    "reason": "profit_maximization_under_low_inventory"
+  },
+  {
+    "operator": "production_adjust_business_table_csv",
+    "params": {
+      "months": ["2025-05"],
+      "rate": -0.20,
+      "file": "business_timeseries.csv"
+    },
+    "reason": "reduce_holding_cost_by_shifting_production_start"
+  },
+  {
+    "operator": "production_adjust_business_table_csv",
+    "params": {
+      "months": ["2025-11", "2025-12"],
+      "rate": 0.10,
+      "file": "business_timeseries.csv"
+    },
+    "reason": "balance_total_volume_and_secure_peak_supply"
+  }
+]

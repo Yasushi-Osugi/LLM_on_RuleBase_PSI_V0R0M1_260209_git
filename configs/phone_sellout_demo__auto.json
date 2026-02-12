@@ -1,0 +1,45 @@
+{
+  "scenario": {
+    "name": "phone_sellout_demo__auto",
+    "note": "Auto mode: standard 4-stage loop (Diagnose->Decide->Apply->Operate)."
+  },
+  "config": {
+    "diagnose": {
+      "enabled": true
+    },
+    "decide": {
+      "enabled": true,
+      "max_ops": 1,
+      "note": "standard behavior: pick one operator from diagnosis recommendations."
+    },
+    "apply": {
+      "enabled": true
+    },
+    "operate": {
+      "enabled": true
+    },
+
+    "apply_price_adjust_timeseries": {
+      "enabled": false,
+      "months": [],
+      "rate": 0.0,
+      "delta": 0.0
+    },
+    "production_adjust_timeseries": {
+      "enabled": false,
+      "months": [],
+      "rate": 0.0,
+      "delta": 0.0
+    },
+
+    "price_adjust_business_table": {
+      "enabled": true
+    },
+    "production_adjust_business_table": {
+      "enabled": true
+    },
+    "demand_adjust": {
+      "enabled": true
+    }
+  }
+}
