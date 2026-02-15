@@ -141,6 +141,37 @@ def _align_series(df: pd.DataFrame, months: List[str], col: str) -> np.ndarray:
     return np.array([m2v.get(m, 0.0) for m in months])
 
 
+def _prepare_before_after_plot_series(df: pd.DataFrame, months: List[str]) -> dict[str, np.ndarray]:
+    """Build deterministic plotting arrays from CSV columns.
+
+    Inventory plotting semantics:
+      - Inventory: min(inventory, cap_I) when cap_I is available
+      - over_i: explicit over_i column if present, else max(inventory-cap_I, 0)
+    """
+    series = {
+        "Demand": _align_series(df, months, "demand"),
+        "Sales": _align_series(df, months, "sales"),
+        "Backlog": _align_series(df, months, "backlog"),
+        "Production": _align_series(df, months, "production"),
+        "Waste": _align_series(df, months, "waste"),
+        "P_cap": _align_series(df, months, "cap_P"),
+        "S_cap": _align_series(df, months, "cap_S"),
+        "I_cap": _align_series(df, months, "cap_I"),
+    }
+
+    inventory_raw = _align_series(df, months, "inventory")
+    over_i_raw = _align_series(df, months, "over_i")
+
+    if "cap_I" in df.columns:
+        series["Inventory"] = np.minimum(inventory_raw, series["I_cap"])
+        series["over_i"] = over_i_raw if "over_i" in df.columns else np.maximum(inventory_raw - series["I_cap"], 0.0)
+    else:
+        series["Inventory"] = inventory_raw
+        series["over_i"] = over_i_raw
+
+    return series
+
+
 # ============================================================
 # CSV BASED : BEFORE / AFTER (上下2段)
 # ============================================================
@@ -220,39 +251,30 @@ def plot_before_after_from_csv(
     x = np.arange(len(months))
 
     def _plot(ax, df: pd.DataFrame, subtitle: str):
-        demand = _align_series(df, months, "demand")
-        sales = _align_series(df, months, "sales")
-        backlog = _align_series(df, months, "backlog")
-        prod = _align_series(df, months, "production")
-        inv = _align_series(df, months, "inventory")
-        waste = _align_series(df, months, "waste")
-        cap_p = _align_series(df, months, "cap_P")
-        cap_s = _align_series(df, months, "cap_S")
-        cap_i = _align_series(df, months, "cap_I")
-        over_i = _align_series(df, months, "over_i")
+        s = _prepare_before_after_plot_series(df, months)
 
         ax.set_title(subtitle)
         ax.set_ylabel("Lots")
 
-        if np.nanmax(cap_i) > 0:
-            ax.fill_between(x, 0, cap_i, alpha=0.12, label="I_cap", zorder=0)
-        if np.nanmax(cap_s) > 0:
-            ax.plot(x, cap_s, linestyle="--", linewidth=3, label="S_cap", zorder=2)
+        if np.nanmax(s["I_cap"]) > 0:
+            ax.fill_between(x, 0, s["I_cap"], alpha=0.12, label="I_cap", zorder=0, color="tab:green")
+        if np.nanmax(s["S_cap"]) > 0:
+            ax.plot(x, s["S_cap"], linestyle="--", linewidth=3, label="S_cap", zorder=2, color="tab:purple")
 
-        ax.plot(x, demand, marker="o", label="Demand", zorder=3)
-        ax.plot(x, sales, marker="o", label="Sales", zorder=3)
-        ax.plot(x, backlog, marker="o", label="Backlog", zorder=3)
+        ax.plot(x, s["Demand"], marker="o", label="Demand", zorder=3, color="tab:orange")
+        ax.plot(x, s["Sales"], marker="o", label="Sales", zorder=3, color="tab:blue")
+        ax.plot(x, s["Backlog"], marker="o", label="Backlog", zorder=3, color="tab:red")
 
         bar_w = 0.22
-        ax.bar(x - bar_w, prod, width=bar_w, label="Production", zorder=1)
-        ax.bar(x, inv, width=bar_w, label="Inventory", zorder=1)
-        ax.bar(x + bar_w, waste, width=bar_w, label="Waste", zorder=1)
+        ax.bar(x - bar_w, s["Production"], width=bar_w, label="Production", zorder=1, color="tab:cyan")
+        ax.bar(x, s["Inventory"], width=bar_w, label="Inventory", zorder=1, color="tab:green")
+        ax.bar(x + bar_w, s["Waste"], width=bar_w, label="Waste", zorder=1, color="tab:gray")
 
-        if np.nanmax(over_i) > 0:
-            ax.bar(x, over_i, bottom=cap_i, alpha=0.25, label="over_i", zorder=2)
+        if np.nanmax(s["over_i"]) > 0:
+            ax.bar(x, s["over_i"], bottom=s["Inventory"], alpha=0.35, label="over_i", zorder=2, color="tab:olive")
 
-        if np.nanmax(cap_p) > 0:
-            ax.scatter(x, cap_p, marker="^", s=90, label="P_cap", zorder=6)
+        if np.nanmax(s["P_cap"]) > 0:
+            ax.scatter(x, s["P_cap"], marker="^", s=90, label="P_cap", zorder=6, color="black")
 
         ax.set_xticks(x)
         ax.set_xticklabels(months, rotation=45, ha="right")
