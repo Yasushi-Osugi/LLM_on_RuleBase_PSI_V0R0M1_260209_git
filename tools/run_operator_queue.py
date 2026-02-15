@@ -222,6 +222,10 @@ def main() -> None:
 
     args = parser.parse_args()
 
+    #@ADD
+    print("[queue] args=", args)
+
+
     queue_path = Path(args.queue)
     if not queue_path.exists():
         print(f"Error: queue file not found: {args.queue}")

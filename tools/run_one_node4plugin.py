@@ -281,8 +281,10 @@ def main():
         run_ctx=run_ctx,
     )
 
-    plot_phone_v0(m, title="One-node PSI overview (run bundle)")
+    #@STOP
+    #plot_phone_v0(m, title="One-node PSI overview (run bundle)")
 
+    plot_phone_v0(m, title="One-node PSI overview (run bundle)", show=False)
 
     #@ADD
     #from pysi.tutorial.plot_virtual_node_v0_money import plot_money_timeseries
