@@ -1,5 +1,6 @@
 0.Function Overview
-This is a small sample python code for communication between LLM and "Rule Base PSI".
+This is On Going project.
+You can see a small sample python code for communication between LLM and "Rule Base PSI".
 
 related article see following URL (Japanese) 
 https://note.com/osuosu1123/n/n4d34ccbb594f
