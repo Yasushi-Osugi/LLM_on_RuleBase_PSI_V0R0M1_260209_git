@@ -79,7 +79,12 @@ MAX_ABS_RATIO = 10.0  # 例えば「価格を10倍」みたいなのは一旦止
 # =========================
 
 def utc_now_iso() -> str:
-    return dt.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
+    #@STOP
+    #return dt.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    
+    return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
 
 
 def sha256_file(path: Path) -> str:

@@ -10,6 +10,39 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+import os
+
+
+
+# ============================================================
+# helper
+# ============================================================
+
+#@MEMO
+# Agg → headless
+# Linux DISPLAY無し → headless
+# 環境変数で強制制御可能
+# Windows GUI backendならshow可能
+
+def _is_headless() -> bool:
+    # --- 明示制御（最優先） ---
+    if os.environ.get("PSI_PLOT_SHOW", "").lower() in ("1", "true", "yes"):
+        return False
+    if os.environ.get("PSI_PLOT_HIDE", "").lower() in ("1", "true", "yes"):
+        return True
+
+    # --- backend判定 ---
+    backend = matplotlib.get_backend().lower()
+    if backend.endswith("agg"):
+        return True
+
+    # --- DISPLAY判定（Linux系） ---
+    if os.name != "nt" and not os.environ.get("DISPLAY"):
+        return True
+
+    return False
+
+
 
 # ============================================================
 # CSV reader
@@ -81,8 +114,22 @@ def plot_money_timeseries(
 
     plt.tight_layout()
 
+
+    #@CHECK
+    #import matplotlib
+    print("[debug] backend=", matplotlib.get_backend(), " save_path=", save_path, " show_in=", show)
+
+    #@STOP
+    #if show is None:
+    #    show = save_path is None
+
     if show is None:
-        show = save_path is None
+        show = (save_path is None) and (not _is_headless())
+
+    # --- hard guard: non-GUI backend can't show ---
+    if show and matplotlib.get_backend().lower().endswith("agg"):
+        show = False
+
 
     if save_path is not None:
         save_path = Path(save_path)
@@ -154,8 +201,24 @@ def plot_money_before_after(
 
     fig.tight_layout()
 
+
+    #@CHECK
+    #import matplotlib
+    print("[debug] backend=", matplotlib.get_backend(), " save_path=", save_path, " show_in=", show)
+
+
+    #@STOP
+    #if show is None:
+    #    show = save_path is None
+
     if show is None:
-        show = save_path is None
+        show = (save_path is None) and (not _is_headless())
+
+    # --- hard guard: non-GUI backend can't show ---
+    if show and matplotlib.get_backend().lower().endswith("agg"):
+        show = False
+
+
 
     if save_path is not None:
         save_path = Path(save_path)
