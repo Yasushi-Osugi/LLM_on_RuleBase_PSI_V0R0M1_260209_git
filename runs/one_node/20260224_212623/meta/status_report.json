@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "time_utc": "2026-02-24T12:26:25Z",
+  "jcl_status": "JCL_INDEX_UPDATED",
+  "run_kind": "one_node",
+  "candidate": {
+    "source": "external_llm",
+    "path": "runs/one_node/_latest/meta/operator_spec.json",
+    "hash": "sha256:8a3dcd5bc94e3705d06605dad507283a5a518ac6f22f2675b1ad0b3891bc9a7f"
+  },
+  "approval": {
+    "required": true,
+    "approved_by": "user",
+    "approved_at": "2026-02-24T12:26:25Z",
+    "comment": ""
+  },
+  "kernel_status": {
+    "status": "RUN_OK",
+    "message": "",
+    "warnings": []
+  },
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "artifacts": {
+    "run_root": "runs/one_node/20260224_212623",
+    "input_dir": "runs/one_node/20260224_212623/input",
+    "output_dir": "runs/one_node/20260224_212623/output",
+    "meta_dir": "runs/one_node/20260224_212623/meta",
+    "index_path": "runs/one_node/_index.jsonl"
+  }
+}
