@@ -9,9 +9,9 @@
 import argparse
 import json
 import shutil
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from pysi.tutorial.virtual_node_v0_adapter import load_phone_v0
 from pysi.tutorial.plot_virtual_node_v0 import plot_phone_v0
@@ -20,6 +20,26 @@ from pysi.tutorial.plot_virtual_node_v0 import plot_phone_v0
 from pysi.core.hooks.core import HookBus, autoload_plugins, set_global, call_register_if_present
 
 from pysi.tutorial.plot_virtual_node_v0_money import plot_money_timeseries
+
+
+def _utc_now_iso() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _append_index_jsonl(index_path: Path, row: Dict[str, Any]) -> None:
+    index_path.parent.mkdir(parents=True, exist_ok=True)
+    with index_path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def _maybe(p: Path) -> Optional[str]:
+    return str(p).replace("\\", "/") if p.exists() else None
+
+
+def _list_pngs(p: Path) -> list[str]:
+    if not p.exists():
+        return []
+    return [str(x).replace("\\", "/") for x in sorted(p.glob("*.png"))]
 
 def _read_json_OLD(path: Path) -> Dict[str, Any]:
     try:
@@ -137,6 +157,11 @@ def main():
         "--run_meta",
         default=None,
         help="path to scenario meta json (e.g. configs/rice_demand_adjust_demo.json)",
+    )
+    ap.add_argument(
+        "--index_path",
+        default=None,
+        help="append run record to index jsonl (optional)",
     )
     args = ap.parse_args()
 
@@ -292,6 +317,57 @@ def main():
     money_csv = Path(output_dir) / "money_timeseries.csv"
     if money_csv.exists():
         plot_money_timeseries(money_csv, title="Money overview (run bundle)")
+
+    # ----------------------------
+    # append run record to index jsonl (optional)
+    # ----------------------------
+    if args.index_path:
+        index_path = Path(args.index_path)
+        run_root = str(run_dir).replace("\\", "/")
+
+        inp = run_dir / "input"
+        out = run_dir / "output"
+
+        inputs = {}
+        for name, rel in [
+            ("business_timeseries", "business_timeseries.csv"),
+            ("capacity_P", "capacity_P.csv"),
+            ("capacity_S", "capacity_S.csv"),
+            ("capacity_I", "capacity_I.csv"),
+            ("virtual_node_timeseries", "virtual_node_timeseries.csv"),
+            ("unit_price_cost", "virtual_node_unit_price_cost.csv"),
+        ]:
+            p = inp / rel
+            v = _maybe(p)
+            if v:
+                inputs[name] = v
+
+        outputs = {}
+        for name, rel in [
+            ("psi_result", "one_node_result_timeseries.csv"),
+            ("money_result", "money_timeseries.csv"),
+            ("kpi_summary", "kpi_summary.json"),
+            ("diagnosis", "diagnosis.json"),
+        ]:
+            p = out / rel
+            v = _maybe(p)
+            if v:
+                outputs[name] = v
+        outputs["plots"] = _list_pngs(out)
+
+        row = {
+            "schema_version": "1.0",
+            "kind": "one_node",
+            "run_id": run_dir.name,
+            "created_at": _utc_now_iso(),
+            "data_dir": str(args.data_dir).replace("\\", "/"),
+            "run_root": run_root,
+            "inputs": inputs,
+            "outputs": outputs,
+            "status": {"kernel_status": "RUN_OK"},
+        }
+        _append_index_jsonl(index_path, row)
+        print(f"[index] appended: {index_path}")
 
 
 
