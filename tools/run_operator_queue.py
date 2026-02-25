@@ -2,6 +2,13 @@
 
 # STARTER
 
+# 実行
+#python -m tools.run_operator_queue --queue configs/operator_queue_phone_demo.json --stop_on_err
+
+# 確認
+#type runs\one_node\queue_work\phone_demo_4steps\step_run_ids.json
+#type runs\one_node\queue_work\phone_demo_4steps\step_run_ids.jsonl
+
 #まずは起動オプション側のおすすめ
 #A. “手ごとの効き” を見る（現状の設計）
 #python -m tools.run_operator_queue --queue configs/operator_queue_phone_demo.json --stop_on_error --plot_each_step
@@ -76,6 +83,30 @@ def _safe_copy(src: Path, dst: Path) -> bool:
         return False
 
 
+def _write_step_run_ids(work_dir: Path, step_run_ids: List[Dict[str, Any]]) -> None:
+    """
+    queue_work/<queue_name>/ 配下に stepごとのrun_id一覧を出力する。
+      - step_run_ids.json  : まとめ（人間が読む用）
+      - step_run_ids.jsonl : 1行1レコード（grep/集計用）
+    """
+    work_dir.mkdir(parents=True, exist_ok=True)
+
+    out_json = work_dir / "step_run_ids.json"
+    out_jsonl = work_dir / "step_run_ids.jsonl"
+
+    out_json.write_text(
+        json.dumps(step_run_ids, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    with out_jsonl.open("w", encoding="utf-8") as f:
+        for row in step_run_ids:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    print(f"[queue] wrote step_run_ids: {out_json}")
+    print(f"[queue] wrote step_run_ids: {out_jsonl}")
+
+
 def _copy_input_snapshot_from_run(run_dir_src: Path, cur_run_dir: Path) -> List[str]:
     """
     指定 run_dir_src の output から主要CSVを、cur_run_dir/input_snapshot にコピーする。
@@ -137,6 +168,7 @@ def _write_latest_operator_spec(runs_dir: Path, step: QueueStep, queue_name: str
 
 
 def _call_run_one_node(data_dir: str, runs_dir: Path, run_meta: str) -> None:
+    index_path = runs_dir / "_index.jsonl"
     cmd = [
         sys.executable,
         "-m",
@@ -147,6 +179,8 @@ def _call_run_one_node(data_dir: str, runs_dir: Path, run_meta: str) -> None:
         str(runs_dir),
         "--run_meta",
         run_meta,
+        "--index_path",
+        str(index_path),
     ]
     subprocess.check_call(cmd)
 
@@ -250,6 +284,10 @@ def main() -> None:
     runs_dir = Path(args.runs_dir)
     runs_dir.mkdir(parents=True, exist_ok=True)
 
+    # queue work dir（run_id一覧など、queue単位の成果物を置く）
+    queue_work_dir = runs_dir / "queue_work" / queue_name
+    step_run_ids: List[Dict[str, Any]] = []
+
     print(f"[queue] Starting queue: {queue_name}")
     print(f"[queue] steps={len(steps)}  run_meta={run_meta}")
 
@@ -287,7 +325,21 @@ def main() -> None:
             print("[queue] Warning: Could not detect new run directory.")
             continue
 
+        # run_id は “run dir名” として確定（YYYYMMDD_HHMMSS）
+        run_id = current_run_dir.name
         print(f"[queue] Step completed. Run directory: {current_run_dir}")
+
+        # --- stepごとのrun_idを収集（あとで一覧エクスポート）
+        step_run_ids.append(
+            {
+                "step_index": idx,
+                "step_id": step.step_id,
+                "operator": step.operator,
+                "run_id": run_id,
+                "run_root": str(current_run_dir).replace("\\", "/"),
+                "reason": f"queue_work: {queue_name} / step: {step.step_id}",
+            }
+        )
 
         # baseline を保持（STEP1）
         if idx == 1 and args.baseline_first:
@@ -312,9 +364,11 @@ def main() -> None:
         # 7) 次の step 用に保持
         last_run_dir = current_run_dir
 
+    if not args.dry_run:
+        _write_step_run_ids(queue_work_dir, step_run_ids)
+
     print(f"\n[queue] All steps finished for queue: {queue_name}")
 
 
 if __name__ == "__main__":
     main()
-
