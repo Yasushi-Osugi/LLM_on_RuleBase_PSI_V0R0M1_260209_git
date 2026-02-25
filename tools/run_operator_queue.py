@@ -3,7 +3,7 @@
 # STARTER
 
 # 実行
-#python -m tools.run_operator_queue --queue configs/operator_queue_phone_demo.json --stop_on_err
+#python -m tools.run_operator_queue --queue configs/operator_queue_phone_demo.json --stop_on_error
 
 # 確認
 #type runs\one_node\queue_work\phone_demo_4steps\step_run_ids.json

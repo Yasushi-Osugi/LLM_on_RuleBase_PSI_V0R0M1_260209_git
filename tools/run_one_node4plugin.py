@@ -14,7 +14,7 @@ import json
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 from pysi.tutorial.virtual_node_v0_adapter import load_phone_v0
 from pysi.tutorial.plot_virtual_node_v0 import plot_phone_v0
@@ -27,6 +27,21 @@ from pysi.tutorial.plot_virtual_node_v0_money import plot_money_timeseries
 
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _make_unique_run_dir(runs_dir: Path, base_ts: str) -> Tuple[str, Path]:
+    run_id = base_ts
+    run_dir = runs_dir / run_id
+    if not run_dir.exists():
+        return run_id, run_dir
+
+    for n in range(1, 1000):
+        run_id2 = f"{base_ts}_{n:02d}"
+        run_dir2 = runs_dir / run_id2
+        if not run_dir2.exists():
+            return run_id2, run_dir2
+
+    raise RuntimeError(f"cannot allocate unique run_dir under {runs_dir} for base {base_ts}")
 
 
 def _append_index_jsonl(index_path: Path, row: Dict[str, Any]) -> None:
@@ -171,8 +186,9 @@ def main():
     args = ap.parse_args()
 
     # run bundle dir
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_dir = Path(args.runs_dir) / ts
+    base_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_id, run_dir = _make_unique_run_dir(Path(args.runs_dir), base_ts)
+    ts = run_id
     input_dir = run_dir / "input"
     output_dir = run_dir / "output"
     meta_dir = run_dir / "meta"
@@ -181,147 +197,156 @@ def main():
     meta_dir.mkdir(parents=True, exist_ok=True)
 
 
-    # ----------------------------
-    # copy input dataset into run bundle (input/)
-    # so before_load operators can safely rewrite CSVs
-    # ----------------------------
-    src_dir = Path(args.data_dir)
-    if src_dir.exists():
-        for p in src_dir.glob("*.csv"):
+    kernel_status = "RUN_OK"
+    error: Optional[str] = None
+    exc: Optional[BaseException] = None
+
+    try:
+        # ----------------------------
+        # copy input dataset into run bundle (input/)
+        # so before_load operators can safely rewrite CSVs
+        # ----------------------------
+        src_dir = Path(args.data_dir)
+        if src_dir.exists():
+            for p in src_dir.glob("*.csv"):
+                try:
+                    shutil.copy2(p, input_dir / p.name)
+                except Exception:
+                    pass
+
+
+        # load run_meta.json (config)
+        repo_root_meta = Path("run_meta.json")
+        meta_dir_meta = meta_dir / "run_meta.json"
+        run_meta_path = Path(args.run_meta) if args.run_meta else None
+        meta = _load_run_meta(repo_root_meta, meta_dir_meta, run_meta_path)
+
+        print("[run_one_node4plugin] run_meta_path=", run_meta_path)
+        print("[run_one_node4plugin] loaded meta keys=", list(meta.keys()) if isinstance(meta, dict) else type(meta))
+
+
+        # keep a copy in run bundle for traceability
+        # IMPORTANT: plugin(before_load) expects run_meta.json to have {"config": {...}}
+        normalized: Dict[str, Any] = {}
+        if isinstance(meta, dict) and meta:
+            if "config" in meta and isinstance(meta.get("config"), dict):
+                normalized = meta
+            else:
+                normalized = {"config": meta}
+
+        if normalized:
             try:
-                shutil.copy2(p, input_dir / p.name)
+                meta_dir_meta.write_text(
+                    json.dumps(normalized, ensure_ascii=False, indent=2), encoding="utf-8"
+                )
             except Exception:
                 pass
 
-
-    # load run_meta.json (config)
-    repo_root_meta = Path("run_meta.json")
-    meta_dir_meta = meta_dir / "run_meta.json"
-    run_meta_path = Path(args.run_meta) if args.run_meta else None
-    meta = _load_run_meta(repo_root_meta, meta_dir_meta, run_meta_path)
-
-    print("[run_one_node4plugin] run_meta_path=", run_meta_path)
-    print("[run_one_node4plugin] loaded meta keys=", list(meta.keys()) if isinstance(meta, dict) else type(meta))
+            #@STOP
+            #try:
+            #    (meta_dir_meta / "run_meta.json").write_text(
+            #        json.dumps(normalized, ensure_ascii=False, indent=2), encoding="utf-8"
+            #    )
+            #except Exception:
+            #    pass
 
 
-    # keep a copy in run bundle for traceability
-    # IMPORTANT: plugin(before_load) expects run_meta.json to have {"config": {...}}
-    normalized: Dict[str, Any] = {}
-    if isinstance(meta, dict) and meta:
-        if "config" in meta and isinstance(meta.get("config"), dict):
-            normalized = meta
+        # ----------------------------
+        # copy input data -> run bundle input/
+        # ----------------------------
+        src_dir = Path(args.data_dir)
+        if src_dir.exists():
+            for p in src_dir.glob("*.csv"):
+                try:
+                    shutil.copy(p, input_dir / p.name)
+                except Exception:
+                    pass
+
+        # ----------------------------
+        # run_ctx (dict) for plugins
+        # ----------------------------
+        config = normalized.get("config", {}) if isinstance(normalized, dict) else {}
+        run_ctx: Dict[str, Any] = {
+            "run_dir": str(run_dir),
+            "data_dir": str(args.data_dir),
+            "input_dir": str(input_dir),
+            "data_dir_effective": str(input_dir),  # use copied inputs
+            "output_dir": str(output_dir),
+            "meta_dir": str(meta_dir),
+            "config": config,
+            "meta": normalized,
+        }
+
+        # HookBus boot
+        bus = HookBus()
+        set_global(bus)
+        autoload_plugins("pysi.plugins.one_node")
+        call_register_if_present("pysi.plugins.one_node", bus)
+
+        # ---- hook point: before_load (CSV rewrite etc.)
+        bus.do_action(
+            "one_node.before_load",
+            run_ctx=run_ctx,
+            meta=run_ctx.get("meta"),
+            config=run_ctx.get("config"),
+        )
+
+        # load + run (use effective data_dir)
+        m = load_phone_v0(
+            run_ctx.get("data_dir_effective", args.data_dir),
+            cap_mode=args.cap_mode,
+            timeseries_name=args.timeseries_name,
+            shelf_life=args.shelf_life,
+        )
+
+        # after_load hook
+        bus.do_action("one_node.after_load", model=m, run_ctx=run_ctx)
+
+        months = m.months
+        print("months:", months[:3], ".", months[-3:])
+        print("total demand:", float(m.demand.sum()))
+
+        if hasattr(m, "production"):
+            total_prod = float(m.production.sum())
+        elif hasattr(m, "production_plan"):
+            total_prod = float(m.production_plan.sum())
+        elif hasattr(m, "prod_plan"):
+            total_prod = float(m.prod_plan.sum())
         else:
-            normalized = {"config": meta}
+            total_prod = 0.0
+        print("total production:", total_prod)
 
-    if normalized:
-        try:
-            meta_dir_meta.write_text(
-                json.dumps(normalized, ensure_ascii=False, indent=2), encoding="utf-8"
-            )
-        except Exception:
-            pass
+        print("ending inventory:", float(m.inv.iloc[-1]) if len(months) else 0.0)
+        print("total backlog(end):", float(m.backlog.iloc[-1]) if len(months) else 0.0)
+        print("total waste:", float(m.waste.sum()))
+        print("total over_i (soft cap overage):", float(m.over_i.sum()))
+
+        # after_run hook (export run-bundle etc.)
+        bus.do_action(
+            "one_node.after_run",
+            run_dir=str(run_dir),
+            data_dir=str(args.data_dir),
+            data_dir_effective=str(run_ctx.get("data_dir_effective", args.data_dir)),
+            args=vars(args),
+            model=m,
+            run_ctx=run_ctx,
+        )
 
         #@STOP
-        #try:
-        #    (meta_dir_meta / "run_meta.json").write_text(
-        #        json.dumps(normalized, ensure_ascii=False, indent=2), encoding="utf-8"
-        #    )
-        #except Exception:
-        #    pass
+        #plot_phone_v0(m, title="One-node PSI overview (run bundle)")
 
+        plot_phone_v0(m, title="One-node PSI overview (run bundle)", show=False)
 
-    # ----------------------------
-    # copy input data -> run bundle input/
-    # ----------------------------
-    src_dir = Path(args.data_dir)
-    if src_dir.exists():
-        for p in src_dir.glob("*.csv"):
-            try:
-                shutil.copy(p, input_dir / p.name)
-            except Exception:
-                pass
+        #@ADD
+        #from pysi.tutorial.plot_virtual_node_v0_money import plot_money_timeseries
 
-    # ----------------------------
-    # run_ctx (dict) for plugins
-    # ----------------------------
-    config = normalized.get("config", {}) if isinstance(normalized, dict) else {}
-    run_ctx: Dict[str, Any] = {
-        "run_dir": str(run_dir),
-        "data_dir": str(args.data_dir),
-        "input_dir": str(input_dir),
-        "data_dir_effective": str(input_dir),  # use copied inputs
-        "output_dir": str(output_dir),
-        "meta_dir": str(meta_dir),
-        "config": config,
-        "meta": normalized,
-    }
-
-    # HookBus boot
-    bus = HookBus()
-    set_global(bus)
-    autoload_plugins("pysi.plugins.one_node")
-    call_register_if_present("pysi.plugins.one_node", bus)
-
-    # ---- hook point: before_load (CSV rewrite etc.)
-    bus.do_action(
-        "one_node.before_load",
-        run_ctx=run_ctx,
-        meta=run_ctx.get("meta"),
-        config=run_ctx.get("config"),
-    )
-
-    # load + run (use effective data_dir)
-    m = load_phone_v0(
-        run_ctx.get("data_dir_effective", args.data_dir),
-        cap_mode=args.cap_mode,
-        timeseries_name=args.timeseries_name,
-        shelf_life=args.shelf_life,
-    )
-
-    # after_load hook
-    bus.do_action("one_node.after_load", model=m, run_ctx=run_ctx)
-
-    months = m.months
-    print("months:", months[:3], ".", months[-3:])
-    print("total demand:", float(m.demand.sum()))
-
-    if hasattr(m, "production"):
-        total_prod = float(m.production.sum())
-    elif hasattr(m, "production_plan"):
-        total_prod = float(m.production_plan.sum())
-    elif hasattr(m, "prod_plan"):
-        total_prod = float(m.prod_plan.sum())
-    else:
-        total_prod = 0.0
-    print("total production:", total_prod)
-
-    print("ending inventory:", float(m.inv.iloc[-1]) if len(months) else 0.0)
-    print("total backlog(end):", float(m.backlog.iloc[-1]) if len(months) else 0.0)
-    print("total waste:", float(m.waste.sum()))
-    print("total over_i (soft cap overage):", float(m.over_i.sum()))
-
-    # after_run hook (export run-bundle etc.)
-    bus.do_action(
-        "one_node.after_run",
-        run_dir=str(run_dir),
-        data_dir=str(args.data_dir),
-        data_dir_effective=str(run_ctx.get("data_dir_effective", args.data_dir)),
-        args=vars(args),
-        model=m,
-        run_ctx=run_ctx,
-    )
-
-    #@STOP
-    #plot_phone_v0(m, title="One-node PSI overview (run bundle)")
-
-    plot_phone_v0(m, title="One-node PSI overview (run bundle)", show=False)
-
-    #@ADD
-    #from pysi.tutorial.plot_virtual_node_v0_money import plot_money_timeseries
-
-    money_csv = Path(output_dir) / "money_timeseries.csv"
-    if money_csv.exists():
-        plot_money_timeseries(money_csv, title="Money overview (run bundle)")
+        money_csv = Path(output_dir) / "money_timeseries.csv"
+        if money_csv.exists():
+            plot_money_timeseries(money_csv, title="Money overview (run bundle)")
+    except BaseException as e:
+        kernel_status = "RUN_NG"
+        error = f"{type(e).__name__}: {e}"
+        exc = e
 
     # ----------------------------
     # append run record to index jsonl (optional)
@@ -369,10 +394,13 @@ def main():
             "run_root": run_root,
             "inputs": inputs,
             "outputs": outputs,
-            "status": {"kernel_status": "RUN_OK"},
+            "status": {"kernel_status": kernel_status, **({"error": error} if error else {})},
         }
         _append_index_jsonl(index_path, row)
         print(f"[index] appended: {index_path}")
+
+    if exc is not None:
+        raise exc
 
 
 if __name__ == "__main__":
