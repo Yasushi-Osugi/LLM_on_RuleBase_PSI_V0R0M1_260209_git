@@ -2,7 +2,7 @@
 This is On Going project.
 You can see a small sample python code for communication between LLM and "Rule Base PSI".
 
-Related article see following URL (Japanese) 
+For more information SEE related article on following URL (Japanese) 
 https://note.com/osuosu1123/n/n4d34ccbb594f
 
 1. STARTER is this
