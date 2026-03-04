@@ -1,0 +1,649 @@
+{
+  "schema_version": "0.1",
+  "generated_at": "2026-03-03T20:19:03.201332+00:00",
+  "inputs": {
+    "one_node_result_timeseries": "one_node_result_timeseries.csv",
+    "kpi_summary": "kpi_summary.json"
+  },
+  "events": [
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2026-05",
+      "metric": "inventory",
+      "value": 550.0,
+      "threshold": 500.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 4,
+        "fields": {
+          "inventory": 550.0,
+          "cap_I": 500.0
+        }
+      }
+    },
+    {
+      "event_id": "E_OVER_I_HIGH",
+      "severity": "low",
+      "scope": "monthly",
+      "month": "2026-05",
+      "metric": "over_i",
+      "value": 50.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Over-inventory detected (obsolescence / holding risk).",
+      "evidence": {
+        "row_index": 4,
+        "fields": {
+          "over_i": 50.0,
+          "inventory": 550.0,
+          "cap_I": 500.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2026-06",
+      "metric": "inventory",
+      "value": 690.0,
+      "threshold": 500.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 5,
+        "fields": {
+          "inventory": 690.0,
+          "cap_I": 500.0
+        }
+      }
+    },
+    {
+      "event_id": "E_OVER_I_HIGH",
+      "severity": "low",
+      "scope": "monthly",
+      "month": "2026-06",
+      "metric": "over_i",
+      "value": 190.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Over-inventory detected (obsolescence / holding risk).",
+      "evidence": {
+        "row_index": 5,
+        "fields": {
+          "over_i": 190.0,
+          "inventory": 690.0,
+          "cap_I": 500.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2026-07",
+      "metric": "inventory",
+      "value": 850.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 6,
+        "fields": {
+          "inventory": 850.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2026-08",
+      "metric": "inventory",
+      "value": 970.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 7,
+        "fields": {
+          "inventory": 970.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2026-09",
+      "metric": "inventory",
+      "value": 1080.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 8,
+        "fields": {
+          "inventory": 1080.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2026-10",
+      "metric": "inventory",
+      "value": 1070.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 9,
+        "fields": {
+          "inventory": 1070.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2026-11",
+      "metric": "inventory",
+      "value": 980.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 10,
+        "fields": {
+          "inventory": 980.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2026-12",
+      "metric": "inventory",
+      "value": 910.0,
+      "threshold": 500.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 11,
+        "fields": {
+          "inventory": 910.0,
+          "cap_I": 500.0
+        }
+      }
+    },
+    {
+      "event_id": "E_OVER_I_HIGH",
+      "severity": "low",
+      "scope": "monthly",
+      "month": "2026-12",
+      "metric": "over_i",
+      "value": 410.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Over-inventory detected (obsolescence / holding risk).",
+      "evidence": {
+        "row_index": 11,
+        "fields": {
+          "over_i": 410.0,
+          "inventory": 910.0,
+          "cap_I": 500.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-01",
+      "metric": "inventory",
+      "value": 860.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 12,
+        "fields": {
+          "inventory": 860.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-02",
+      "metric": "inventory",
+      "value": 850.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 13,
+        "fields": {
+          "inventory": 850.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-03",
+      "metric": "inventory",
+      "value": 680.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 14,
+        "fields": {
+          "inventory": 680.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-04",
+      "metric": "inventory",
+      "value": 550.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 15,
+        "fields": {
+          "inventory": 550.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-05",
+      "metric": "inventory",
+      "value": 450.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 16,
+        "fields": {
+          "inventory": 450.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-06",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 17,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-07",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 18,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-08",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 19,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-09",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 20,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-10",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 21,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-11",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 22,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2027-12",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 23,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-01",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 24,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-02",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 25,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-03",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 26,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-04",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 27,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-05",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 28,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-06",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 29,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-07",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 30,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-08",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 31,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-09",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 32,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-10",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 33,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-11",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 34,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    },
+    {
+      "event_id": "E_INVENTORY_CAP_EXCEEDED",
+      "severity": "medium",
+      "scope": "monthly",
+      "month": "2028-12",
+      "metric": "inventory",
+      "value": 370.0,
+      "threshold": 0.0,
+      "direction": ">",
+      "message": "Inventory exceeds capacity (storage/quality risk).",
+      "evidence": {
+        "row_index": 35,
+        "fields": {
+          "inventory": 370.0,
+          "cap_I": 0.0
+        }
+      }
+    }
+  ],
+  "summary": {
+    "count_total": 35,
+    "count_high": 0,
+    "count_medium": 32,
+    "count_low": 3
+  }
+}

@@ -1,0 +1,13 @@
+[
+  {
+    "operator": "sales_adjust_business_table_csv",
+    "params": {
+      "months": [
+        "YYYY-MM"
+      ],
+      "rate": 0.0,
+      "file": "business_timeseries.csv"
+    },
+    "reason": "describe_reason"
+  }
+]

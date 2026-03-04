@@ -2,11 +2,13 @@
 # tools/show_index.py
 
 # STARTER
+# Use --verify
+#python -m tools.show_index --index_path runs\one_node\_index.jsonl --n 5 --verify
+#python -m tools.show_index --index_path runs\one_node\_index.jsonl --n 20 --json --verify
+
 #python -m tools.show_index --index_path runs\one_node\_index.jsonl --n 5
 #python -m tools.show_index --index_path runs\one_node\_index.jsonl --n 20 --json
 
-#python -m tools.show_index --index_path runs\one_node\_index.jsonl --n 5 --verify
-#python -m tools.show_index --index_path runs\one_node\_index.jsonl --n 20 --json --verify
 
 
 from __future__ import annotations
