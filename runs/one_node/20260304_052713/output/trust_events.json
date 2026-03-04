@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "generated_at": "2026-03-03T21:19:54.292216+00:00",
+  "generated_at": "2026-03-04T15:52:02.480238+00:00",
   "inputs": {
     "one_node_result_timeseries": "one_node_result_timeseries.csv",
     "kpi_summary": "kpi_summary.json"

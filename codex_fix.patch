@@ -1,0 +1,198 @@
+diff --git a/tools/run_detect_trust_events.py b/tools/run_detect_trust_events.py
+index 5cbde82c4c604627587b50fbbeb261c60b0c88ff..4841c098e0b99e3cd241aa67a5f82ed442610cd1 100644
+--- a/tools/run_detect_trust_events.py
++++ b/tools/run_detect_trust_events.py
+@@ -1,122 +1,154 @@
+ #tools/run_detect_trust_events.py
+ 
+ # tools/run_detect_trust_events.py
+ # Usage examples:
+ #   python -m tools.run_detect_trust_events --runs_dir runs\one_node --latest --write
+ #   python -m tools.run_detect_trust_events --output_dir runs/one_node/20260304_052713/output
+ #   python -m tools.run_detect_trust_events --run_dir    runs/one_node/20260304_052713
+ 
+ 
+ import argparse
+ import json
+ from pathlib import Path
+-from typing import Any, Dict
++from typing import Any, Dict, Iterable
+ 
+ from pysi.plugins.one_node.after_run.detect_trust_events import detect_trust_events
+ 
+ 
++REQUIRED_FILES = ("one_node_result_timeseries.csv", "kpi_summary.json")
++
++
++def _path_from_cli(raw: str) -> Path:
++    # Accept Windows-style backslash paths even on POSIX runtime.
++    return Path(raw.replace("\\", "/"))
++
++
++def _has_required_files(p: Path) -> bool:
++    return all((p / name).exists() for name in REQUIRED_FILES)
++
++
++def _first_valid_output_dir(candidates: Iterable[Path], *, context: str) -> Path:
++    tried: list[Path] = []
++    for candidate in candidates:
++        c = candidate.resolve()
++        tried.append(c)
++        if c.exists() and _has_required_files(c):
++            return c
++    tried_text = "\n".join(f"- {p}" for p in tried) if tried else "- (none)"
++    raise FileNotFoundError(
++        f"Could not resolve output_dir for {context}. Tried:\n{tried_text}\n"
++        f"Required files: {list(REQUIRED_FILES)}"
++    )
++
++
++def _coerce_to_output_dir(p: Path) -> Path:
++    # Accept any of: output_dir itself, run_dir, or meta/.
++    candidates = [
++        p,
++        p / "output",
++        p.parent / "output" if p.name == "meta" else p / "meta" / ".." / "output",
++    ]
++    return _first_valid_output_dir(candidates, context=f"input path: {p}")
++
++
+ def _resolve_latest_run_output_dir(runs_dir: Path, index_path: Path | None) -> Path:
+     runs_dir = runs_dir.resolve()
+     if index_path is None:
+         index_path = runs_dir / "_index.jsonl"
+     index_path = index_path.resolve()
+ 
+     if not index_path.exists():
+         raise FileNotFoundError(f"index jsonl not found: {index_path}")
+ 
+     last_line = None
+     with index_path.open("r", encoding="utf-8") as f:
+         for line in f:
+             line = line.strip()
+             if line:
+                 last_line = line
+     if not last_line:
+         raise RuntimeError(f"index jsonl is empty: {index_path}")
+ 
+     obj = json.loads(last_line)
+-    # run_one_node4plugin の index 仕様が多少揺れても耐えるように候補を複数見る
+-    run_dir_str = (
+-        obj.get("run_dir")
+-        or obj.get("run_path")
+-        or obj.get("dir")
+-        or obj.get("path")
+-    )
+-    if not run_dir_str:
+-        raise KeyError(f"Cannot find run dir key in last index entry: keys={list(obj.keys())}")
+ 
+-    run_dir = Path(run_dir_str)
+-    # indexに相対パスが入るケースを想定
+-    if not run_dir.is_absolute():
+-        run_dir = (runs_dir / run_dir).resolve()
++    candidates: list[Path] = []
++
++    outputs = obj.get("outputs")
++    if isinstance(outputs, dict):
++        for key in ("psi_result", "kpi_summary"):
++            value = outputs.get(key)
++            if isinstance(value, str) and value.strip():
++                p = _path_from_cli(value)
++                if not p.is_absolute():
++                    p = runs_dir / p
++                candidates.append(p.parent)
++
++    run_id = obj.get("run_id")
++    run_root = obj.get("run_root")
++    if isinstance(run_root, str) and run_root.strip() and isinstance(run_id, str) and run_id.strip():
++        root = _path_from_cli(run_root)
++        if not root.is_absolute():
++            root = runs_dir / root
++        candidates.extend([root / run_id / "output", root / run_id])
+ 
+-    out = run_dir / "output"
+-    return out
++    if isinstance(run_id, str) and run_id.strip():
++        candidates.extend([runs_dir / run_id / "output", runs_dir / run_id])
++
++    return _first_valid_output_dir(candidates, context=f"latest entry in {index_path}")
+ 
+ def _resolve_output_dir(run_dir: Path | None, output_dir: Path | None) -> Path:
+     if output_dir is not None:
+         out = output_dir
+     elif run_dir is not None:
+-        # allow passing ".../output" itself
+-        out = run_dir if run_dir.name == "output" else (run_dir / "output")
++        out = run_dir
+     else:
+         raise ValueError("Either --output_dir or --run_dir must be provided.")
+-
+-    out = out.resolve()
+-    if not out.exists():
+-        raise FileNotFoundError(f"output_dir not found: {out}")
+-
+-    # minimal sanity check
+-    required = ["one_node_result_timeseries.csv", "kpi_summary.json"]
+-    missing = [name for name in required if not (out / name).exists()]
+-    if missing:
+-        raise FileNotFoundError(f"Missing required file(s) under output_dir: {out} missing={missing}")
+-
+-    return out
++    return _coerce_to_output_dir(out)
+ 
+ 
+ def main() -> None:
+     ap = argparse.ArgumentParser()
+ 
+     ap.add_argument("--runs_dir", default=None, help="e.g., runs/one_node (contains _index.jsonl and run folders)")
+     ap.add_argument("--latest", action="store_true", help="resolve latest run from runs_dir/_index.jsonl")
+     ap.add_argument("--index_path", default=None, help="optional explicit path to _index.jsonl")
+ 
+     ap.add_argument("--output_dir", default=None, help="path to run bundle output dir")
+     ap.add_argument("--run_dir", default=None, help="path to run bundle dir (contains output/)")
+     ap.add_argument(
+         "--write",
+         action="store_true",
+         help="write trust_events.json into output_dir (in addition to printing)",
+     )
+     args = ap.parse_args()
+ 
+-    run_dir = Path(args.run_dir) if args.run_dir else None
+-    output_dir = Path(args.output_dir) if args.output_dir else None
++    run_dir = _path_from_cli(args.run_dir) if args.run_dir else None
++    output_dir = _path_from_cli(args.output_dir) if args.output_dir else None
+ 
+     #@STOP
+     #out = _resolve_output_dir(run_dir=run_dir, output_dir=output_dir)
+     if args.latest:
+         if not args.runs_dir:
+             raise ValueError("--latest requires --runs_dir (e.g., runs/one_node)")
+         out = _resolve_latest_run_output_dir(
+-            runs_dir=Path(args.runs_dir),
+-            index_path=Path(args.index_path) if args.index_path else None,
++            runs_dir=_path_from_cli(args.runs_dir),
++            index_path=_path_from_cli(args.index_path) if args.index_path else None,
+         )
+     else:
+         out = _resolve_output_dir(run_dir=run_dir, output_dir=output_dir)
+ 
+ 
+ 
+     result: Dict[str, Any] = detect_trust_events(str(out))
+ 
+     # print pretty
+     print(json.dumps(result, ensure_ascii=False, indent=2))
+ 
+     if args.write:
+         out_path = out / "trust_events.json"
+         out_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+         print(f"[run_detect_trust_events] wrote: {out_path}")
+ 
+ 
+ if __name__ == "__main__":
+-    main()
+\ No newline at end of file
++    main()
+ 
+EOF
+)
